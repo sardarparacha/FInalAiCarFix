@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiring Diagram Viewer</title>
+</head>
+
+<body>
+    <h1>Select Wiring Diagram</h1>
+    <form id="wiringForm">
+        <label for="manufacturer">Manufacturer:</label>
+        <select id="manufacturer" name="manufacturer">
+            <option value="">Select Manufacturer</option>
+        </select>
+        <br><br>
+
+        <label for="model">Model:</label>
+        <select id="model" name="model">
+            <option value="">Select Model</option>
+        </select>
+        <br><br>
+
+        <label for="variant">Variant:</label>
+        <select id="variant" name="variant">
+            <option value="">Select Variant</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Get Wiring Diagram</button>
+    </form>
+
+    <h2>Wiring Diagram</h2>
+    <div id="wiringDiagram">
+        <!-- Wiring diagram image will be displayed here -->
+    </div>
+
+    <script>
+        const apiKey = '3a2ttc8382p8apzj6bqcad33';
+        const countryCode = 'gb';
+
+        // Load manufacturers on page load
+        fetch(`https://api.autodata-group.com/docs/v1/manufacturers?country-code=${countryCode}&api_key=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                const manufacturerSelect = document.getElementById('manufacturer');
+                data.data.forEach(manufacturer => {
+                    const option = document.createElement('option');
+                    option.value = manufacturer.manufacturer_id;
+                    option.textContent = manufacturer.manufacturer;
+                    manufacturerSelect.appendChild(option);
+                });
+            });
+
+        document.getElementById('manufacturer').addEventListener('change', function () {
+            const manufacturerId = this.value;
+            fetch(`https://api.autodata-group.com/docs/v1/manufacturers/${manufacturerId}?country-code=${countryCode}&api_key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    const modelSelect = document.getElementById('model');
+                    modelSelect.innerHTML = '<option value="">Select Model</option>';
+                    data.data.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.model_id;
+                        option.textContent = model.model;
+                        modelSelect.appendChild(option);
+                    });
+                });
+        });
+
+        document.getElementById('model').addEventListener('change', function () {
+            const manufacturerId = document.getElementById('manufacturer').value;
+            const modelId = this.value;
+            fetch(`https://api.autodata-group.com/docs/v1/vehicles?manufacturer_id=${manufacturerId}&model_id=${modelId}&country-code=${countryCode}&page=1&limit=20&api_key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    const variantSelect = document.getElementById('variant');
+                    variantSelect.innerHTML = '<option value="">Select Variant</option>';
+                    data.data.forEach(variant => {
+                        const option = document.createElement('option');
+                        option.value = variant.mid;
+                        option.textContent = `${variant.model} ${variant.extra_info}`;
+                        variantSelect.appendChild(option);
+                    });
+                });
+        });
+
+        var mid = null;
+        document.getElementById('variant').addEventListener('change', function () {
+            const variantId = this.value;
+            fetch(`https://api.autodata-group.com/docs/v1/vehicles/${variantId}?links=yes&country-code=${countryCode}&api_key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Additional logic if needed to handle response
+                    console.log(data);
+
+                    mid = data.data.mid;
+
+
+                }).then(() => {
+                    console.log('Mid ', mid);
+
+
+
+                    document.getElementById('wiringForm').addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const variantId = document.getElementById('variant').value;
+                        fetch(`https://api.autodata-group.com/docs/v1/vehicles/${mid}/wiring-diagrams?country-code=${countryCode}&api_key=${apiKey}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.data.length > 0) {
+                                    data.data.forEach(diagram => {
+                                        diagram.variant_groups.forEach(group => {
+                                            group.variants.forEach(variant => {
+                                                const diagramUrl = `https://api.autodata-group.com/docs${variant.href}&api_key=${apiKey}`;
+                                                fetch(diagramUrl)
+                                                    .then(response => response.json())
+                                                    .then(imageData => {
+                                                        const diagramDiv = document.getElementById('wiringDiagram');
+                                                        const img = document.createElement('img');
+                                                        img.src = imageData.data.url;
+                                                        img.alt = "Wiring Diagram";
+                                                        diagramDiv.appendChild(img);
+                                                    });
+                                            });
+                                        });
+                                        diagram.general_variants.forEach(variant => {
+                                            const diagramUrl = `https://api.autodata-group.com/docs${variant.href}&api_key=${apiKey}`;
+                                            fetch(diagramUrl)
+                                                .then(response => response.json())
+                                                .then(imageData => {
+                                                    const diagramDiv = document.getElementById('wiringDiagram');
+                                                    const img = document.createElement('img');
+                                                    img.src = imageData.data.url;
+                                                    img.alt = "Wiring Diagram";
+                                                    diagramDiv.appendChild(img);
+                                                });
+                                        });
+                                    });
+                                }
+                            });
+                    });
+
+                })
+        });
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,270 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+
+}
+
+.bg-hero{
+  background-image: url('../public/Main/Hero_back.png');
+}
+.bgphone  {
+  background-image: url('../public/Main/phone.png');
+  background-position: center;
+  background-size: cover;
+}
+ 
+/* ------------ */
+
+
+.bg-gureente {
+  background-image: url('../public/Main/guarantee.png');
+  background-position: center;
+  background-size: cover;
+}
+.bg-cretifed {
+  background-image: url('../public/Main/certified.png');
+  background-position: center;
+  background-size: cover;
+}
+
+/* ------------ */
+
+.bg-CenteralHeroLogo {
+  background-image: url('../public/Main/_icon_withtagline.jpg');
+  background-position: center;
+  background-size: cover;
+
+}
+
+.bg-CenteralHeroLogo-old{
+  background-image: url('../public/Main/_icon_withtagline_old.png');
+  background-position: center;
+  background-size: cover;
+
+}
+
+/* ---------- */
+
+.bg-helpChatImage {
+  background-image: url('../public/Main/helpChatImage.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+
+/* --------- */
+
+.bg-fromback {
+  background-image: url('../public/Main/Form_back.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+/* --------- */
+
+.bg-email{
+  background-image: url('../public/Main/email.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+.bg-call{
+  background-image: url('../public/Main/call.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+.bg-location{
+  background-image: url('../public/Main/location.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+
+/* ----------------- */
+
+.bg-facebook{
+  background-image: url('../public/Main/facebook.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+.bg-instagram{
+  background-image: url('../public/Main/instagram.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+.bg-xlogo{
+  background-image: url('../public/Main/xlogo.png');
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+}
+
+
+/* --------testimonial ------- */
+
+.testimonial-slider-container {
+  padding: 30px;
+  
+  color: white;
+  
+}
+
+.testimonial-header {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 24px;
+  color: white;
+}
+
+
+.testimonial-card {
+  
+  background-color: #FFFFFF;
+  color: #333;
+  border-radius: 10px;
+  margin: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid;
+}
+
+.testimonial-text {
+  font-size: 16px;
+  color: #011E33; /* Dark text for contrast */
+  margin-bottom: 10px;
+}
+
+.testimonial-author {
+  font-size: 14px;
+  font-style: italic;
+  color: #666;
+  align-self: flex-end;
+}
+
+.slick-slide {
+  display: flex;
+  justify-content: center;
+}
+
+.slick-dots {
+  text-align: center;
+  list-style: none;
+  padding: 0;
+}
+
+.slick-dots li button:before {
+  color: white; /* White dots in the slider */
+}
+
+.slick-dots li.slick-active button:before {
+  color: #0B72B9; /* Highlight color for active dot */
+}
+
+.slick-prev:before, .slick-next:before {
+  color: white; /* White arrows */
+}
+
+@media (max-width: 600px) {
+  .testimonial-text {
+    font-size: 14px;
+  }
+
+  .testimonial-author {
+    font-size: 12px;
+  }
+}
+
+
+.testimonial-card:hover {
+  height: auto; /* Expands the height if the text overflows */
+}
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* the slides */
+.slick-slide {
+  margin: 0 10px;
+}
+
+/* the parent */
+.slick-list {
+  margin: 0 -10px;
+}
+
+.slick-list {
+  max-height: 300px !important;
+  overflow: hidden;
+
+}
+
+/* Add this to your global CSS file or module CSS file */
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
