@@ -6,6 +6,7 @@ import homeIcon from "../../public/Chat/home.png";
 import { useSelector } from "react-redux";
 import { backend_url, openai_key } from "../data";
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
@@ -61,7 +62,7 @@ const ChatComponent = () => {
           try {
             return {
               ...message,
-              content: JSON.parse(<ReactMarkdown>{message.content}</ReactMarkdown>)
+              content: JSON.parse(message.content)
             };
           } catch (e) {
             return message; // If parsing fails, return the message as is
@@ -129,10 +130,8 @@ const ChatComponent = () => {
         }
       });
 
-
-      // in contentadd ReactMarkdown
       const botReply = {
-        content:  <ReactMarkdown>{chatResponse.data.answer}</ReactMarkdown>,
+        content: chatResponse.data.response,
         sender: "bot",
         timestamp: new Date().toLocaleString(),
         role: "system"
@@ -163,7 +162,6 @@ const ChatComponent = () => {
     formData.append("assistantId", assistantId);
     formData.append("threadId", threadId);
     formData.append("files", file);
-    formData.append('file', file);
 
     setFileLoading(true);
 
@@ -171,8 +169,6 @@ const ChatComponent = () => {
       const upload_file_to_Assistant = await axios.post(`${openai_key}/upload-to-assistant`, formData);
 
       console.log('upload_file_to_Assistant', upload_file_to_Assistant.data);
-
-      formData.delete('file');
 
       const uploadedFileUrl = URL.createObjectURL(file); // Using local URL for display
       const fileMessage = {
@@ -223,7 +219,7 @@ const ChatComponent = () => {
               <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12m16-1h-8l3.5-3.5l-1.42-1.42L6.16 12l5.92 5.92l1.42-1.42L10 13h8z" /></svg>
             </button>
             <Image src={homeIcon} alt="Home Icon" width={24} height={24}
-            onClick={()=>{window.location.href = '/Dashboard';}}
+            onClick={() => { window.location.href = '/Dashboard'; }}
             className="mr-2 cursor-pointer" />
             <h3 className="text-xl font-semibold text-[#011E33]">Chat</h3>
           </div>
@@ -238,10 +234,10 @@ const ChatComponent = () => {
                 {message.fileUrl ? (
                   <a href={message.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">{message.content}</a>
                 ) : (
-                  <p>{typeof message.content === 'string' ?
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                     : JSON.stringify(
-                    message.content)}</p>
+                  <ReactMarkdown
+                    children={typeof message.content === 'string' ? message.content : JSON.stringify(message.content)}
+                    remarkPlugins={[remarkGfm]}
+                  />
                 )}
                 <small className="block text-gray-500 mt-2">{message.timestamp}</small>
               </div>
@@ -258,48 +254,6 @@ const ChatComponent = () => {
             className="w-full bg-transparent text-white border-none outline-none px-3"
             disabled={loading || fileLoading}
           />
-
-
-          {/* {paymentDetails && paymentDetails?.remainingDays > 0 ? (
-            <>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                id="fileInput"
-              />
-              <label htmlFor="fileInput" className="cursor-pointer text-white text-lg hover:text-gray-300 ml-3">
-                📎
-              </label>
-              {file && (
-                <div className="text-white text-sm ml-3 flex">
-                  {file.name}
-                  <button
-                    onClick={handleFileUpload}
-                    className="text-white text-lg hover:text-gray-300 ml-3"
-                    disabled={fileLoading}
-                  >
-                    {fileLoading ? (
-                      <></>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M11 16V7.85l-2.6 2.6L7 9l5-5l5 5l-1.4 1.45l-2.6-2.6V16zm-5 4q-.825 0-1.412-.587T4 18v-3h2v3h12v-3h2v3q0 .825-.587 1.413T18 20z" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="cursor-pointer" title="Premium Feature">
-              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 36 36">
-                <path fill="#FFFFFF" d="M18.09 20.59A2.41 2.41 0 0 0 17 25.14V28h2v-2.77a2.41 2.41 0 0 0-.91-4.64" className="clr-i-outline clr-i-outline-path-1" />
-                <path fill="#FFFFFF" d="M26 15v-4.28a8.2 8.2 0 0 0-8-8.36a8.2 8.2 0 0 0-8 8.36V15H7v17a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V15Zm-14-4.28a6.2 6.2 0 0 1 6-6.36a6.2 6.2 0 0 1 6 6.36V15H12ZM9 32V17h18v15Z" className="clr-i-outline clr-i-outline-path-2" />
-                <path fill="none" d="M0 0h36v36H0z" />
-              </svg>
-            </div>
-          )} */}
-
           {!file && !loading && !fileLoading && (
             <button
               onClick={handleSendMessage}
