@@ -9,7 +9,6 @@ import conceptCar from "../../public/Chat/carimage.png";
 import Lock_MaintenanceRecord from '../../public/Main/lock_MaintenanceRecords.png';
 import StartChat from "../Components/StartChat";
 import Partner from "../Components/Partner";
-
 import GoogleMapComponent from "../Components/GoogleMapComponent";
 import Footer from "../Components/Footer";
 import { useLogoutMutation } from '../slices/usersApiSlice';
@@ -43,48 +42,51 @@ const VisionSConcept = () => {
     }, [userInfo]);
 
     useEffect(() => {
-        fetchCarImage();
+        // Ensure this code only runs in the browser
+        if (typeof window !== 'undefined') {
+            fetchCarImage();
+        }
     }, []);
 
     const fetchCarImage = async () => {
-        const selectedCar = JSON.parse(localStorage.getItem("selectedCar"));
-        if (!selectedCar) {
-          console.error('No car selected');
-          window.location.href = '/SelectCar';
-          return;
-        }
-      
-        const { carMake, carModel, carYear, carTrim } = selectedCar;
-      
-        const endpoint = `${API_URL}/get`;
-        const headers = {
-          'Content-Type': 'application/json'
-        };
-      
-        const requestBody = {
-          endpoint: 'vehicle-media-images',
-          params: { carYear, carMake, carModel, carTrim }
-        };
-      
-        try {
-          const response = await axios.post(endpoint, requestBody, { headers });
-          console.log('Get response', response);
-      
-          if (response.status !== 200) {
-            return;
-          }
-          setResponse(response.data);
-          const imageUrl = response.data.data.images[0] || conceptCar;
-          setCarImage(imageUrl);
-        } catch (error) {
-          console.error(`Error fetching car image: ${error.response?.status} - ${error.message}`);
-        }
-      };
-      
+        // Ensure this code only runs in the browser
+        if (typeof window !== 'undefined') {
+            const selectedCar = JSON.parse(localStorage.getItem("selectedCar"));
+            if (!selectedCar) {
+                console.error('No car selected');
+                window.location.href = '/SelectCar';
+                return;
+            }
 
+            const { carMake, carModel, carYear, carTrim } = selectedCar;
+
+            const endpoint = `${API_URL}/get`;
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            const requestBody = {
+                endpoint: 'vehicle-media-images',
+                params: { carYear, carMake, carModel, carTrim }
+            };
+
+            try {
+                const response = await axios.post(endpoint, requestBody, { headers });
+                console.log('Get response', response);
+
+                if (response.status !== 200) {
+                    return;
+                }
+                setResponse(response.data);
+                const imageUrl = response.data.data.images[0] || conceptCar;
+                setCarImage(imageUrl);
+            } catch (error) {
+                console.error(`Error fetching car image: ${error.response?.status} - ${error.message}`);
+            }
+        }
+    };
 
     const fetchPaymentDetails = async (userId) => {
-
         try {
             const response = await axios.get(`${backend_url}/api/payments/${userId}`);
             setPaymentDetails(response.data);
@@ -97,15 +99,19 @@ const VisionSConcept = () => {
         try {
             await logout().unwrap();
             dispatch(setCredentials(null));
-            localStorage.removeItem("hasSeenPopup");
-            window.location.href = '/Login';
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem("hasSeenPopup");
+                window.location.href = '/Login';
+            }
         } catch (err) {
             console.error('Failed to logout:', err);
         }
     };
 
     const openchat = () => {
-        window.location.href = '/Chat';
+        if (typeof window !== 'undefined') {
+            window.location.href = '/Chat';
+        }
     }
 
     return (
@@ -121,16 +127,10 @@ const VisionSConcept = () => {
 
                             <div className="flex items-center  md:mb-0">
                                 <Image src={homeIcon} alt="Home Icon"
-                                    onClick={() => { window.location.href = "#" }}
+                                    onClick={() => { if (typeof window !== 'undefined') window.location.href = "#" }}
                                     width={24} height={24} className="mr-2 cursor-pointer" />
                                 <h3 className="text-xl font-semibold text-blue-900">Chat</h3>
                             </div>
-
-
-
-
-
-
 
                             <div className="relative flex">
                                 <div
@@ -144,7 +144,7 @@ const VisionSConcept = () => {
                                     >{name.substring(0, 5)}
                                     </p>
                                 </div>
-                              
+
                                 {dropdownVisible && (
                                     <>
 
@@ -158,16 +158,16 @@ const VisionSConcept = () => {
                                 )}
                             </div>
 
-
                         </div>
-
 
                         <div className="flex justify-center">
                             <button
                                 style={{ width: "150px" }}
                                 className="border border-[#011E33]-900 text-black py-1 rounded-full flex items-center justify-center"
                                 onClick={() => {
-                                    window.location.href = "/SelectCar";
+                                    if (typeof window !== 'undefined') {
+                                        window.location.href = "/SelectCar";
+                                    }
                                 }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5 mr-2">
@@ -177,12 +177,13 @@ const VisionSConcept = () => {
                             </button>
                         </div>
 
-
                         {/* Concept Car */}
                         <div className="flex flex-col items-center justify-center p-8">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-blue-900 mb-6"> {JSON.parse(localStorage.getItem("selectedCar"))?.carMake + " - " +
-                                JSON.parse(localStorage.getItem("selectedCar"))?.carModel
-                            }</h2>
+                            <h2 className="text-2xl md:text-3xl font-semibold text-blue-900 mb-6">
+                                {typeof window !== 'undefined' && JSON.parse(localStorage.getItem("selectedCar"))?.carMake + " - " +
+                                    JSON.parse(localStorage.getItem("selectedCar"))?.carModel
+                                }
+                            </h2>
                             <Image src={carImage} alt="Vision S Concept Car" width={600} height={400} className="rounded-lg" />
                         </div>
                     </div>
@@ -192,10 +193,7 @@ const VisionSConcept = () => {
                     <StartChat openchat={openchat} />
                 </div>
 
-             
-
                 <MaintenanceRecords />
-           
                 <Footer />
             </ProtectedRoute>
         </>
