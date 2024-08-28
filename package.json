@@ -1,5 +1,5 @@
 {
-  "name": "carclinic",
+  "name": "carAiFix",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -29,6 +29,7 @@
     "react-slick": "^0.30.2",
     "react-swipeable": "^7.0.1",
     "react-toastify": "^10.0.5",
+    "remark-gfm": "^4.0.0",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.1.3"
   },
