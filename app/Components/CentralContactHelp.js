@@ -20,7 +20,7 @@ const CentralContactHelp = () => {
           height: "calc(100% - 72px)", // Deduct the height of the header
           border: "none"
         }}
-          src="https://www.youtube.com/embed/-5MFfr4D-2s?si=QFKeQzfuTHJ2In9l"
+          src="i will add later"
           title="YouTube video player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
